@@ -186,26 +186,8 @@ EOF
 echo "Done $stepMsg!" && echo
 echo "-----------------------------------------------------------------------"
 
-stepMsg="Populating cronjob with utilitarian scripts for the WMA_USER"
 echo "-----------------------------------------------------------------------"
-echo "Start $stepMsg"
-
-# TODO: These executable flags we should consider fixing them for all *.sh
-#       scripts under the /deploy top level area in the WMCore github repository
-chmod +x $WMA_DEPLOY_DIR/deploy/renew_proxy.sh $WMA_DEPLOY_DIR/deploy/restartComponent.sh
-
-crontab -u $WMA_USER - <<EOF
-55 */12 * * * $WMA_MANAGE_DIR/manage renew-proxy
-58 */12 * * * python $WMA_DEPLOY_DIR/deploy/checkProxy.py --proxy /data/certs/myproxy.pem --time 120 --send-mail True --mail alan.malta@cern.ch
-*/15 * * * *  source $WMA_DEPLOY_DIR/deploy/restartComponent.sh > /dev/null
-EOF
-
-echo "Done $stepMsg!" && echo
-echo "-----------------------------------------------------------------------"
-
-
-echo "-----------------------------------------------------------------------"
-echo "WMAgent contaner build finished!!" && echo
+echo "WMAgent image build finished!!" && echo
 echo "Have a nice day!" && echo
 echo "======================================================================="
 
