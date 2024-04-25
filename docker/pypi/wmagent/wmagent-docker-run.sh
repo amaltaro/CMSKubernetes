@@ -80,9 +80,11 @@ fi
 [[ -d $HOST_MOUNT_DIR/srv/wmagent/$WMA_TAG/logs ]] || { mkdir -p $HOST_MOUNT_DIR/srv/wmagent/$WMA_TAG/logs ;} || exit $?
 
 # Check we own everything in $HOST_MOUNT_DIR/srv/wmagent/$WMA_TAG and $HOST_MOUNT_DIR/etc
-echo "Correcting ownership for WMA_ROOT_DIR: $HOST_MOUNT_DIR"
+echo "Correcting ownership for HOST_MOUNT_DIR: $HOST_MOUNT_DIR"
 find $HOST_MOUNT_DIR/srv/wmagent/$WMA_TAG \! \( -user $wmaUser -group $wmaGroup \) -exec chown -f $wmaUser:$wmaGroup '{}' + || exit $?
 find $HOST_MOUNT_DIR/etc \! \( -user $wmaUser -group $wmaGroup \) -exec chown -f $wmaUser:$wmaGroup '{}' + || exit $?
+find $HOST_MOUNT_DIR/certs \! \( -user $wmaUser -group $wmaGroup \) -exec chown -f $wmaUser:$wmaGroup '{}' + || exit $?
+find $HOST_MOUNT_DIR/admin \! \( -user $wmaUser -group $wmaGroup \) -exec chown -f $wmaUser:$wmaGroup '{}' + || exit $?
 
 # NOTE: Before mounting /etc/tnsnames.ora we should check it exists, otherwise the run will fail on the FNAL agents
 tnsMount=""
