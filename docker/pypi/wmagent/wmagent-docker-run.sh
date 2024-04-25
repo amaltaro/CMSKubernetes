@@ -45,7 +45,7 @@ done
 
 wmaUser=$(id -un)
 wmaGroup=$(id -gn)
-userOpts=" --user $(id -u):$(id -g)"
+userOpts="--user $(id -u):$(id -g)"
 
 # This is the root at the host only, it may differ from the root inside the container.
 # NOTE: This is parametriesed, so that the container can run on a different mount point.
@@ -80,6 +80,7 @@ fi
 [[ -d $HOST_MOUNT_DIR/srv/wmagent/$WMA_TAG/logs ]] || { mkdir -p $HOST_MOUNT_DIR/srv/wmagent/$WMA_TAG/logs ;} || exit $?
 
 # Check we own everything in $HOST_MOUNT_DIR/srv/wmagent/$WMA_TAG and $HOST_MOUNT_DIR/etc
+echo "Correcting ownership for WMA_ROOT_DIR: $HOST_MOUNT_DIR"
 find $HOST_MOUNT_DIR/srv/wmagent/$WMA_TAG \! \( -user $wmaUser -group $wmaGroup \) -exec chown -f $wmaUser:$wmaGroup '{}' + || exit $?
 find $HOST_MOUNT_DIR/etc \! \( -user $wmaUser -group $wmaGroup \) -exec chown -f $wmaUser:$wmaGroup '{}' + || exit $?
 
@@ -100,6 +101,7 @@ $tnsMount \
 --mount type=bind,source=$HOST_MOUNT_DIR/srv/wmagent/$WMA_TAG/install,target=/data/srv/wmagent/current/install \
 --mount type=bind,source=$HOST_MOUNT_DIR/srv/wmagent/$WMA_TAG/config,target=/data/srv/wmagent/current/config \
 --mount type=bind,source=$HOST_MOUNT_DIR/srv/wmagent/$WMA_TAG/logs,target=/data/srv/wmagent/current/logs \
+--mount type=bind,source=$HOST_MOUNT_DIR/admin/wmagent,target=/data/admin/wmagent \
 --mount type=bind,source=$HOST_MOUNT_DIR/etc/passwd,target=/etc/passwd,readonly \
 --mount type=bind,source=$HOST_MOUNT_DIR/etc/group,target=/etc/group,readonly \
 --mount type=bind,source=/etc/sudoers,target=/etc/sudoers,readonly \
@@ -115,7 +117,7 @@ $PULL && {
 }
 
 echo "Checking if there is no other wmagent container running and creating a link to the $WMA_TAG in the host mount area."
-[[ `docker container inspect -f '{{.State.Status}}' wmagent 2>/dev/null ` == 'running' ]] || (
+[[ $(docker container inspect -f '{{.State.Status}}' wmagent 2>/dev/null) == 'running' ]] || (
     [[ -h $HOST_MOUNT_DIR/srv/wmagent/current ]] && rm -f $HOST_MOUNT_DIR/srv/wmagent/current
     ln -s $HOST_MOUNT_DIR/srv/wmagent/$WMA_TAG $HOST_MOUNT_DIR/srv/wmagent/current )
 

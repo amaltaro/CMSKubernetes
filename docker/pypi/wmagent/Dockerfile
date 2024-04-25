@@ -7,13 +7,6 @@ ARG WMA_TAG=$TAG
 ENV WMA_TAG=$WMA_TAG
 ENV WMA_ROOT_DIR=/data
 
-# WMA_USER argument to be passed at build time with `--build-arg WMA_USER=blah`. Default: wma_docker
-ARG WMA_USER=wma_docker
-RUN groupadd -g 55444 -r $WMA_USER
-RUN useradd -u 55444 --create-home -g $WMA_USER $WMA_USER
-RUN usermod -aG mysql ${WMA_USER}
-RUN rm -f /etc/mysql/mariadb.conf.d/50-server.cnf
-
 # Basic WMAgent directory structure passed to all scripts through env variables:
 # NOTE: Those should be static and depend only on $WMA_BASE_DIR
 ENV WMA_BASE_DIR=$WMA_ROOT_DIR/srv/wmagent
@@ -51,7 +44,7 @@ RUN ${WMA_ROOT_DIR}/install.sh -t ${WMA_TAG}
 WORKDIR ${WMA_ROOT_DIR}
 
 # Set WMAgent docker specific bash prompt and manage alias for all users:
-RUN <<EOF cat >>/root/.bashrc
+RUN <<EOF cat >> /root/.bashrc
 alias manage=$WMA_MANAGE_DIR/manage
 export PS1="(WMAgent-$TAG) [\u@\h:\W]\$([[ \$(id -u) -eq 0 ]] && echo \# || echo \$) "
 EOF
@@ -61,9 +54,5 @@ alias manage=$WMA_MANAGE_DIR/manage
 export PS1="(WMAgent-$TAG) [\u@\h:\W]\$([[ \$(id -u) -eq 0 ]] && echo \# || echo \$) "
 EOF
 
-# Define the entrypoint (Using exec Form):
+# Define the entrypoint (Using exec form):
 ENTRYPOINT ["./run.sh", "2>&1"]
-
-# # Define the entrypoint (Using shell Form):
-# SHELL ["/bin/bash", "-c"]
-# ENTRYPOINT /data/run.sh 2>&1
