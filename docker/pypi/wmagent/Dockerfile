@@ -43,15 +43,9 @@ RUN ${WMA_ROOT_DIR}/install.sh -t ${WMA_TAG}
 # Switch to the runtime directory
 WORKDIR ${WMA_ROOT_DIR}
 
-# Set WMAgent docker specific bash prompt and manage alias for all users:
+# Set command prompt for root
 RUN <<EOF cat >> /root/.bashrc
-alias manage=$WMA_MANAGE_DIR/manage
-export PS1="(WMAgent-$TAG) [\u@\h:\W]\$([[ \$(id -u) -eq 0 ]] && echo \# || echo \$) "
-EOF
-
-RUN <<EOF cat >> ~/.bashrc
-alias manage=$WMA_MANAGE_DIR/manage
-export PS1="(WMAgent-$TAG) [\u@\h:\W]\$([[ \$(id -u) -eq 0 ]] && echo \# || echo \$) "
+export PS1="(WMAgent-\$WMA_TAG) [\u@\h:\W]# "
 EOF
 
 # Define the entrypoint (Using exec form):

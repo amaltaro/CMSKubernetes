@@ -6,15 +6,12 @@ wmaGroup=$(id -gn)
 wmaUserID=$(id -u)
 wmaGroupID=$(id -g)
 export WMA_USER=$wmaUser
+
 echo "Running WMAgent container with user: $wmaUser (ID: $wmaUserID) and group: $wmaGroup (ID: $wmaGroupID)"
 
-echo "Correcting ownership for WMA_ROOT_DIR: $WMA_ROOT_DIR"
-find $WMA_ROOT_DIR \! \( -user $wmaUser -group $wmaGroup \) -exec chown -f $wmaUser:$wmaGroup '{}' +;
-
-# append the WMAgent user to the mysql group
-if getent passwd mysql >/dev/null 2>&1; then
-    usermod -aG mysql ${WMA_USER}
-fi
+echo "Setting up bashrc for user: $wmaUser"
+mv ${WMA_ROOT_DIR}/etc/wmagent_bashrc ~/.bashrc
+source ~/.bashrc
 
 echo "Start initialization"
 ./init.sh | tee -a $WMA_LOG_DIR/init.log || true
