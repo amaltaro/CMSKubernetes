@@ -78,6 +78,7 @@ groupEntry=$(getent group $thisGroup)
 [[ -d $HOST_MOUNT_DIR/srv/couchdb/$COUCH_TAG/config  ]] || mkdir -p $HOST_MOUNT_DIR/srv/couchdb/$COUCH_TAG/config  || exit $?
 [[ -d $HOST_MOUNT_DIR/srv/couchdb/$COUCH_TAG/install/database ]] || mkdir -p $HOST_MOUNT_DIR/srv/couchdb/$COUCH_TAG/install/database || exit $?
 [[ -d $HOST_MOUNT_DIR/srv/couchdb/$COUCH_TAG/logs ]] || mkdir -p $HOST_MOUNT_DIR/srv/couchdb/$COUCH_TAG/logs || exit $?
+[[ -d $HOST_MOUNT_DIR/srv/couchdb/$COUCH_TAG/state ]] || mkdir -p $HOST_MOUNT_DIR/srv/couchdb/$COUCH_TAG/state || exit $?
 
 
 dockerOpts="
@@ -89,8 +90,9 @@ dockerOpts="
 --name=couchdb \
 --mount type=bind,source=/tmp,target=/tmp \
 --mount type=bind,source=$HOST_MOUNT_DIR/certs,target=/data/certs \
---mount type=bind,source=$HOST_MOUNT_DIR/srv/couchdb/$COUCH_TAG/install/database,target=/data/srv/couchdb/current/install/database \
+--mount type=bind,source=$HOST_MOUNT_DIR/srv/couchdb/$COUCH_TAG/install,target=/data/srv/couchdb/current/install \
 --mount type=bind,source=$HOST_MOUNT_DIR/srv/couchdb/$COUCH_TAG/logs,target=/data/srv/couchdb/current/logs \
+--mount type=bind,source=$HOST_MOUNT_DIR/srv/couchdb/$COUCH_TAG/state,target=/data/srv/couchdb/current/state \
 --mount type=bind,source=$HOST_MOUNT_DIR/srv/couchdb/$COUCH_TAG/config,target=/data/srv/couchdb/current/config \
 --mount type=bind,source=$HOST_MOUNT_DIR/admin/wmagent,target=/data/admin/wmagent/ \
 --mount type=bind,source=$HOST_MOUNT_DIR/admin/couchdb,target=/data/admin/couchdb/ \
@@ -101,6 +103,7 @@ dockerOpts="
 "
 
 # --mount type=bind,source=$HOST_MOUNT_DIR/srv/couchdb/$COUCH_TAG/config,target=/data/srv/couchdb/current/config \
+# --mount type=bind,source=$HOST_MOUNT_DIR/srv/couchdb/$COUCH_TAG/install/database,target=/data/srv/couchdb/current/install/database \
 
 registry=local
 repository=wmagent-couchdb
