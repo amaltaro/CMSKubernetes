@@ -75,7 +75,7 @@ groupEntry=$(getent group $thisGroup)
 
 [[ -d $HOST_MOUNT_DIR/certs ]] || mkdir -p $HOST_MOUNT_DIR/certs || exit $?
 [[ -d $HOST_MOUNT_DIR/admin/couchdb ]] || mkdir -p $HOST_MOUNT_DIR/admin/couchdb || exit $?
-# [[ -d $HOST_MOUNT_DIR/srv/couchdb/$COUCH_TAG/config  ]] || mkdir -p $HOST_MOUNT_DIR/srv/couchdb/$COUCH_TAG/config  || exit $?
+[[ -d $HOST_MOUNT_DIR/srv/couchdb/$COUCH_TAG/config  ]] || mkdir -p $HOST_MOUNT_DIR/srv/couchdb/$COUCH_TAG/config  || exit $?
 [[ -d $HOST_MOUNT_DIR/srv/couchdb/$COUCH_TAG/install/database ]] || mkdir -p $HOST_MOUNT_DIR/srv/couchdb/$COUCH_TAG/install/database || exit $?
 [[ -d $HOST_MOUNT_DIR/srv/couchdb/$COUCH_TAG/logs ]] || mkdir -p $HOST_MOUNT_DIR/srv/couchdb/$COUCH_TAG/logs || exit $?
 
@@ -91,6 +91,7 @@ dockerOpts="
 --mount type=bind,source=$HOST_MOUNT_DIR/certs,target=/data/certs \
 --mount type=bind,source=$HOST_MOUNT_DIR/srv/couchdb/$COUCH_TAG/install/database,target=/data/srv/couchdb/current/install/database \
 --mount type=bind,source=$HOST_MOUNT_DIR/srv/couchdb/$COUCH_TAG/logs,target=/data/srv/couchdb/current/logs \
+--mount type=bind,source=$HOST_MOUNT_DIR/srv/couchdb/$COUCH_TAG/config,target=/data/srv/couchdb/current/config \
 --mount type=bind,source=$HOST_MOUNT_DIR/admin/wmagent,target=/data/admin/wmagent/ \
 --mount type=bind,source=$HOST_MOUNT_DIR/admin/couchdb,target=/data/admin/couchdb/ \
 --mount type=bind,source=$HOST_MOUNT_DIR/admin/etc/passwd,target=/etc/passwd,readonly \
