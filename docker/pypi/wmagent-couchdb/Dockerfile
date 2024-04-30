@@ -13,6 +13,7 @@ RUN apt-get install -y hostname net-tools iputils-ping procps emacs-nox tcpdump 
 
 RUN pip install CMSCouchapp
 
+ENV COUCH_PORT=5984
 ENV COUCH_ROOT_DIR=/data
 
 ENV COUCH_BASE_DIR=$COUCH_ROOT_DIR/srv/couchdb
